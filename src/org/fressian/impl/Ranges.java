@@ -35,43 +35,43 @@ public class Ranges {
     public static final int BYTE_CHUNK_SIZE = 65535;
 
 
-//    public static void main(String[] args) {
-//        long[] bounds = new long[]{
-//                PACKED_1_START,
-//                PACKED_1_END,
-//                PACKED_2_START,
-//                PACKED_2_END,
-//                PACKED_3_START,
-//                PACKED_3_END,
-//                PACKED_4_START,
-//                PACKED_4_END,
-//                PACKED_5_START,
-//                PACKED_5_END,
-//                PACKED_6_START,
-//                PACKED_6_END,
-//                PACKED_7_START,
-//                PACKED_7_END,
-//        };
-//        for (int n = 0; n < bounds.length; n++) {
-//            for (long l = bounds[n] - 1; l < bounds[n] + 2; l++) {
-//                long abs = Math.abs(l);
-//                System.out.println(String.format("Number %X %d %d bits: %d switch: %d", l, l, Long.numberOfLeadingZeros(abs), bitsNeeded(l), switchOn(l)));
-//            }
-//        }
-//    }
-//    public static int bitsNeeded(long l) {
-//        if (l > 0) {
-//            return 65 - Long.numberOfLeadingZeros(l);
-//        } else {
-//            return 65 - Long.numberOfLeadingZeros(~l);
-//        }
-//    }
-//    public static int switchOn(long l) {
-//        if (l > 0) {
-//            return Long.numberOfLeadingZeros(l);
-//        } else {
-//            return Long.numberOfLeadingZeros(~l);
-//        }
-//    }
+   public static void main(String[] args) {
+       long[] bounds = new long[]{
+               PACKED_1_START,
+               PACKED_1_END,
+               PACKED_2_START,
+               PACKED_2_END,
+               PACKED_3_START,
+               PACKED_3_END,
+               PACKED_4_START,
+               PACKED_4_END,
+               PACKED_5_START,
+               PACKED_5_END,
+               PACKED_6_START,
+               PACKED_6_END,
+               PACKED_7_START,
+               PACKED_7_END,
+       };
+       for (int n = 0; n < bounds.length; n++) {
+           for (long l = bounds[n] - 1; l < bounds[n] + 2; l++) {
+               long abs = Math.abs(l);
+               System.out.println(String.format("Number %X %d %d bits: %d switch: %d", l, l, Long.numberOfLeadingZeros(abs), bitsNeeded(l), switchOn(l)));
+           }
+       }
+   }
+   public static int bitsNeeded(long l) {
+       if (l > 0) {
+           return 65 - Long.numberOfLeadingZeros(l);
+       } else {
+           return 65 - Long.numberOfLeadingZeros(~l);
+       }
+   }
+   public static int switchOn(long l) {
+       if (l > 0) {
+           return Long.numberOfLeadingZeros(l);
+       } else {
+           return Long.numberOfLeadingZeros(~l);
+       }
+   }
 
 }
