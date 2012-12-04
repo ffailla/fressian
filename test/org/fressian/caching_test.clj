@@ -56,3 +56,42 @@
 (compare-cache-and-uncached-versions [true false nil -1 0 1 1000 10000 "" "FOO" 1.0 2.0
                                       (CachedObject. 0) (CachedObject. "BAR")])
 )
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defn roundtrip-cache-socket
+  [host port write-args]
+  (let [sock (java.net.Socket. host port)
+        os (.getOutputStream sock)
+        is (.getInputStream sock)
+        bbw (java.nio.ByteBuffer/allocate 8)
+        bbr (java.nio.ByteBuffer/allocate 8)]
+    (.write os (.array (.putLong bbw (count write-args))))
+    (.read is (.array bbr)) ; need to check if the long read is equal to (count objs)
+    (let [wtr (fressian/create-writer os fressian/clojure-write-handlers)
+          rdr (fressian/create-reader is fressian/clojure-read-handlers true)]
+      (doseq [[idx [obj cache]] (map-indexed vector write-args)]
+        (let [_ (.writeObject wtr obj cache)])
+        (.writeFooter wtr))
+      (into [] (map-indexed (fn [idx _]
+                              (let [ret (.readObject rdr)]
+                                (.validateFooter rdr)
+                                ret))
+                            write-args)))))
+
+(comment 
+
+(defspec fressian-socket-strings-with-caching
+  (partial roundtrip-cache-socket "127.0.0.1" 19876)
+  [^{:tag (`gen/cache-session `tgen/string)} args]
+  (assert (= (map first args) %)))
+
+(defspec fressian-socket-with-caching
+  (partial roundtrip-cache-socket "127.0.0.1" 19876)
+  [^{:tag (`gen/cache-session `gen/fressian-builtin)} args]
+  (assert= (map first args) %))
+
+  (clojure.test.generative/test-vars (var org.fressian.caching-test/fressian-socket-with-caching))
+  (clojure.test.generative/test-vars (var org.fressian.caching-test/fressian-socket-strings-with-caching))
+
+)
